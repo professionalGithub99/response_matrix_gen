@@ -1,0 +1,17 @@
+# Definition of the radiation field
+# by means of the General Particle Source
+
+/run/numberOfThreads 5  
+/control/verbose 2                                                                 
+/run/verbose 0 
+/run/initialize
+/gps/pos/type Point
+/gps/pos/centre 0 0 4 cm
+/gps/ang/type iso
+
+/gps/particle ion 
+/gps/ion 95 241 95 0.
+#
+/analysis/setFileName _am241
+/run/printProgress 10000
+/run/beamOn 5000000

@@ -1,0 +1,20 @@
+/control/verbose 2                                                                 
+#
+/run/verbose 0 
+/run/numberOfThreads 8
+
+/run/initialize
+#
+/gun/particle ion
+#/gun/ion 11 22 # Na22
+#/gun/ion 56 133 # Ba133
+/gun/ion 27 60  # Co60
+#/gun/ion 55 137
+
+/gun/position 0 0 10.16 cm
+#
+/analysis/setFileName Co60
+#
+/run/printProgress 10000  
+/run/printProgress 100000
+/run/beamOn 1000000

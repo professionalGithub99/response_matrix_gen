@@ -1,0 +1,26 @@
+#
+#
+##########################################################################
+# **********************************
+# ********************************************************
+# MAKE SURE YOU SET YOUR PG TO GPS IN ACTIONINITIALIZATION
+# ******************************************************** 
+/run/numberOfThreads 6
+/run/initialize
+/run/printProgress 1000000
+/analysis/setFileName _mono
+
+/gps/particle gamma
+#
+#/gps/pos/type beam
+#/gps/pos/shape Circle
+#/gps/pos/radius 1 cm
+/gps/pos/centre 0 0 0 cm
+/gps/ang/type iso
+
+/gps/ene/mono 0.356 MeV
+#59.54 keV
+#/gps/hist/type energy
+#
+
+/run/beamOn 1000000
