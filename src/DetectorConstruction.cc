@@ -93,8 +93,10 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   // Create World physical volume
   auto worldVol_physV = new G4PVPlacement(0, G4ThreeVector(0,0,0), worldVol_logV, "worldVol_physV", 0, false,  0);
 
-  // Al casing
-  double oD = 7.62; // [cm]  
+
+  ///____THE FOLLOWING UNCOMMENT BLOCK IS A SINGLE GROUP ___//
+ // Al casing
+  /*double oD = 7.62; // [cm]  
   double ssThickness = 0.079; // [cm]
   double iD = oD - (2 * ssThickness); 
   double ssHeight = 7.62; // [cm] 
@@ -139,6 +141,22 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
             ptfeLogical,
             false,
             0);
+            */
+  //Al casing 
+  double oD = 7.94; //[cm]
+  double iD = 7.62; //[cm]
+  double alThicknessRadial = (oD-iD)/2; //[cm]
+  double alHeight = 7.78;
+  double scintHeight = 7.62;
+  double alThicknessAxial = alHeight - scintHeight; //[cm]
+  G4Tubs* housing = new G4Tubs("housing", 0, oD*cm/2, alHeight*cm/2, 0, 360.*deg);
+  theMaterial = matDef.GetMaterial( MATAL );
+  G4LogicalVolume* housingLogical= new G4LogicalVolume(housing, theMaterial, "housingLogical");
+  new G4PVPlacement(0, G4ThreeVector(0*m,0*m,0*m), housingLogical, "housing",worldVol_logV, false, 0);
+  theMaterial = matDef.GetMaterial(MATEJ301DH);
+  G4Tubs* scint = new G4Tubs("scint", 0, iD*cm/2, scintHeight*cm/2, 0, 360.*deg);
+  auto f_scintLogical = new G4LogicalVolume(scint,theMaterial,"scint");
+  new G4PVPlacement(0, G4ThreeVector(0*m,0*m,-alThicknessAxial*cm/2), f_scintLogical, "scint", housingLogical, false, 0);
   
   // 1-in stilbene __ Al casing
   //
@@ -252,7 +270,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   //blueAtt->SetForceWireframe(true);
  
   housingLogical->SetVisAttributes( grayAtt );
-  ptfeLogical->SetVisAttributes( redAtt );
+  //ptfeLogical->SetVisAttributes( redAtt );
   f_scintLogical->SetVisAttributes( blueAtt ); 
   
   return worldVol_physV;

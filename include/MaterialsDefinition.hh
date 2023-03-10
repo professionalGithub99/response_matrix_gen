@@ -12,7 +12,7 @@
 enum materialName
 {
   MATVAC,MATAIR,MATAL,MATB,MATPMMA,MATEFFPMT,MATMUMETAL,MATEJ309,MATEJ309B1,
-  MATEJ309B25,MATEJ309B5, MATPYREX, MATEJ315, MATDSTILBENE, MATODESSA,
+  MATEJ309B25,MATEJ309B5, MATPYREX, MATEJ301DH, MATEJ315, MATDSTILBENE, MATODESSA,
   MATSTILBENE, MATSS, MATPTFE, MATW
 };//END of enum materialName
 
@@ -37,7 +37,7 @@ private:
 
     G4Material *matPMMA, *matEffPMT, *matMuMetal, *matPyrex, *matPTFE;
 
-    G4Material *matEJ309, *matEJ309B1, *matEJ309B25, *matEJ309B5, *matEJ315;
+    G4Material *matEJ309, *matEJ309B1, *matEJ309B25, *matEJ309B5, *matEJ301DH, *matEJ315;
 
     G4Material *matDStilbene, *matOdessa, *matStilbene;
 };//END of class MaterialsDefinition

@@ -30,7 +30,9 @@ fParticleGun(0)
   fParticleGun  = new G4ParticleGun(n_particle);
 
   auto particleDefinition
-  = G4ParticleTable::GetParticleTable()->FindParticle("neutron");
+  //= G4ParticleTable::GetParticleTable()->FindParticle("neutron");
+  = G4ParticleTable::GetParticleTable()->FindParticle("gamma");
+
   fParticleGun->SetParticleDefinition(particleDefinition);
   //fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0.,0.,1.));
   fParticleGun->SetParticleEnergy(partEnergy*MeV);

@@ -28,6 +28,7 @@ MaterialsDefinition::MaterialsDefinition()
   matEJ309B25  = 0;
   matEJ309B5   = 0;
   matPyrex     = 0;
+  matEJ301DH   = 0;
   matEJ315     = 0;
   matDStilbene = 0;
   matOdessa    = 0;
@@ -132,16 +133,22 @@ void MaterialsDefinition::DefineMaterials()
   matEJ309B1->AddElement(C, fractionmass=0.896);
   matEJ309B1->AddElement(B, fractionmass=0.01);
 
+
+  //EJ301DH 
+  //note it doesnt fully match the paper on ej301d in ratio between d and c but also paper doesnt specify the H 
+  //which is why I added H
+  density = 1.030*g /cm3; 
+  matEJ301DH = new G4Material("matEJ301DH", density, ncomponents=3);
+  matEJ301DH->AddElement(elD, natoms = 4720);
+  matEJ301DH->AddElement(H, natoms = 116);
+  matEJ301DH->AddElement(C, natoms = 3990);
+
   // EJ-315
   density = 0.954*g / cm3;
   matEJ315 = new G4Material("matEJ315", density, ncomponents=3); //3
   matEJ315->AddElement(H, fractionmass=.0005);     // 1
   matEJ315->AddElement(C, fractionmass=.859995);   // 141
   matEJ315->AddElement(elD, fractionmass=.143);    // 141
-
-  // Albert: to do
-  // add EJ-301D Material 
-
 
   // D-stilbene from Fred's paper
   density = 1.24*g / cm3;
@@ -284,6 +291,10 @@ G4Material * MaterialsDefinition::GetMaterial(materialName matName)
 
     case MATEJ309B5:
       theMaterial = matEJ309B25; //defined in constructor
+      break;
+
+    case MATEJ301DH:
+      theMaterial = matEJ301DH; //defined in constructor
       break;
 
     case MATEJ315:

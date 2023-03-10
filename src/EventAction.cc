@@ -36,6 +36,11 @@ void EventAction::BeginOfEventAction(const G4Event* event)
   Edep_gam = 0;
   Edep_neu = 0;
   Edep_deu = 0;
+  Edep_pro = 0;
+  Edep_ele = 0;
+  Edep_pos = 0;
+  Edep_alp = 0;
+  Edep_car = 0;
   b_incident = false;
   trackN.clear();
   trackE.clear();
@@ -44,10 +49,13 @@ void EventAction::BeginOfEventAction(const G4Event* event)
   for(int i=0; i<LibConstants::numberOfPixelsInDetector;i++)
     totEdepPix.push_back(0);
   // Set up histograms
-  analysisManager->GetH1Id("Det0_src");         // 0
-  analysisManager->GetH1Id("Det0_eDep");        // 1
-  analysisManager->GetH1Id("Det0_lo");          // 2
-  analysisManager->GetH1Id("Det0_lo_smear");    // 3
+  analysisManager->GetH1Id("Det0_src");       // 0
+  analysisManager->GetH1Id("Det0_gam_lo");  // 1
+  analysisManager->GetH1Id("Det0_gam_smear"); // 3
+  analysisManager->GetH1Id("Det0_gam_scat");  // 4
+  analysisManager->GetH1Id("Det0_neu_eDep");  // 5
+  analysisManager->GetH1Id("Det0_neu_lo");    // 6
+  analysisManager->GetH1Id("Det0_neu_smear"); // 7
   //analysisManager->GetH1Id("Det0_eDep_gam");    // 4
   //analysisManager->GetH1Id("Det0_eDep_deu");    // 5
 }
@@ -80,6 +88,48 @@ void EventAction::FillTrack(G4double edep, G4double tN)
 {
   trackN.push_back(tN);
   trackE.push_back(edep*MeV);
+}
+void EventAction::FillTrackGam(G4double edep, G4double tN)
+{
+  trackN_gam.push_back(tN);
+  trackE_gam.push_back(edep*MeV);
+}
+
+void EventAction::FillTrackNeu(G4double edep, G4double tN)
+{
+  trackN_neu.push_back(tN);
+  trackE_neu.push_back(edep*MeV);
+}
+
+void EventAction::FillTrackDeu(G4double edep, G4double tN)
+{
+  trackN_deu.push_back(tN);
+  trackE_deu.push_back(edep*MeV);
+}
+void EventAction::FillTrackPro(G4double edep, G4double tN)
+{
+  trackN_pro.push_back(tN);
+  trackE_pro.push_back(edep*MeV);
+}
+void EventAction::FillTrackEle(G4double edep, G4double tN)
+{
+  trackN_ele.push_back(tN);
+  trackE_ele.push_back(edep*MeV);
+}
+void EventAction::FillTrackPos(G4double edep, G4double tN)
+{
+  trackN_pos.push_back(tN);
+  trackE_pos.push_back(edep*MeV);
+}
+void EventAction::FillTrackAlp(G4double edep, G4double tN)
+{
+  trackN_alp.push_back(tN);
+  trackE_alp.push_back(edep*MeV);
+}
+void EventAction::FillTrackCar(G4double edep, G4double tN)
+{
+  trackN_car.push_back(tN);
+  trackE_car.push_back(edep*MeV);
 }
 
 void EventAction::EndOfEventAction(const G4Event* event)
@@ -115,10 +165,14 @@ void EventAction::EndOfEventAction(const G4Event* event)
   //double alpha =  0.1757;//-0.04;//.16;//.00426;
   //double beta  =  0.07589; //.087;//.1234;
   //double gamma =  0.01011;//.033;//.0579;
+  // 3-in EJ301DH 
+  double alpha = 3.17137E-5;;
+  double beta = 1.40287E-1;
+  double gamma = 1.94422E-2;
   // 3-in EJ315
-  double alpha =  7.9E-4;;//-0.04;//.16;//.00426;
-  double beta  =  1.5E-1; //.087;//.1234;
-  double gamma =  9.1E-4;//.033;//.0579;
+  //double alpha =  7.9E-4;;//-0.04;//.16;//.00426;
+  //double beta  =  1.5E-1; //.087;//.1234;
+  //double gamma =  9.1E-4;//.033;//.0579;
 
   // grab event number
   t_eventN = event->GetEventID();
@@ -131,10 +185,10 @@ void EventAction::EndOfEventAction(const G4Event* event)
   //if(Edep_deu > 0.0) analysisManager->FillH1(1,Edep_deu*MeV); // neu
   
   // *** For gamma-ray source ***
-  if( totEdep > 0.0) 
+  if( Edep_gam > 0.0) 
   {
-    analysisManager->FillH1(1,totEdep*MeV); // neu
-    auto gam_LO = hp.smearElectronEDep(totEdep, alpha,beta,gamma);
+    analysisManager->FillH1(1,Edep_gam*MeV); // neu
+    auto gam_LO = hp.smearElectronEDep(Edep_gam, alpha,beta,gamma);
     analysisManager->FillH1(2,gam_LO*MeV);
     if(incidentEn != 4430) 
     {
@@ -142,7 +196,8 @@ void EventAction::EndOfEventAction(const G4Event* event)
       analysisManager->FillH1(3,gam_LO*MeV); // scattered
     }
   }
-  /*if(Edep_deu > 0.0) 
+
+  if(Edep_deu > 0.0) 
   {
     // total energy 
     //t_edep_tot = totEdep;
@@ -160,28 +215,14 @@ void EventAction::EndOfEventAction(const G4Event* event)
     // ************************
     if(Edep_deu > 0.0 && trackN.size() > 0)
     {
-      // convert energy to LO
-      // EJ309 for SPD
-      //double p0 = 0.59;//0.559784;// * TMath::Power(10,-20);//0.62977;
-      //double p1 = 0.83;//1.65132;//1.85093;
-      //double p2 = 0.68;//0.315047;//.30392;
-      // EJ301D for SPD
-      //double p0 = 1.131;//0.559784;// * TMath::Power(10,-20);//0.62977;
-      //double p1 = 11.9846;//1.65132;//1.85093;
-      //double p2 = 0.0833;//0.315047;//.30392;
-      // 2-in stilbene
-      //double p0 = 1.131;//0.559784;// * TMath::Power(10,-20);//0.62977;
-      //double p1 = 11.9846;//1.65132;//1.85093;
-      //double p2 = 0.0833;//0.315047;//.30392;
-      // EJ301D for SPD from 
-      // Characterization of Deuterated-Xylene Scintillator as a Neutron Spectrometer
-      //double p0 = 0.61;//0.559784;// * TMath::Power(10,-20);//0.62977;
-      //double p1 = 3.13;//1.65132;//1.85093;
-      //double p2 = 0.16;//0.315047;//.30392;
-       // Odessa
-      auto p0 = 604.6 / 1000.;
+      // Odessa
+      /*auto p0 = 604.6 / 1000.;
       auto p1 = 1732.4 / 1000.;
-      auto p2 = 0.294;
+      auto p2 = 0.294;*/
+      auto p0 = 572/1000.;
+      auto p1 = 2394/1000.;
+      auto p2 = 200/1000.;
+
       // smear the deuteron energy
       // sort deu tracks
       auto uniqueTrackN = trackN;
@@ -211,15 +252,14 @@ void EventAction::EndOfEventAction(const G4Event* event)
         analysisManager->AddNtupleRow(1);
         //deu_LO += .029*en*en + 0.108*en + 2.56 * TMath::Power(10,-16);
       }
-
-      analysisManager->FillH1(2,deu_LO*MeV);
+      analysisManager->FillH1(4,Edep_deu*MeV);
+      analysisManager->FillH1(5,deu_LO*MeV); // without resolution
       // Right now this will only work for a deuterated detector
       t_lo_neu = hp.smearElectronEDep(deu_LO, alpha,beta,gamma);//0.131,0.08,0.062);//.0045,0.07,0.0048);
       //t_lo_neu = 1.05*deu_LO;//0.131,0.08,0.062);//.0045,0.07,0.0048);
-
-      analysisManager->FillH1(3,t_lo_neu*MeV);
+      analysisManager->FillH1(6,t_lo_neu*MeV); // with resolution
     }
-  }*/
+  }
   // Fill Event tree
   analysisManager->FillNtupleIColumn(0, 0, t_eventN);
   analysisManager->FillNtupleDColumn(0, 1, t_sourceEn);

@@ -45,20 +45,24 @@ RunAction::RunAction(std::string fN)
   // ***********************
   // Book histograms, ntuple
   // **********************
-  int nBins   = 3000;
+  int nBins   = 12000;
   double endR = 30;
   // Creating 1D histograms
   analysisManager
     ->CreateH1("Det0_src",";Energy (MeV);Counts",nBins,0,endR); // h1 Id = 0
   analysisManager
-    ->CreateH1("Det0_eDep",";Energy (MeV);Counts",nBins,0,endR); // h1 Id = 1
+    ->CreateH1("Det0_gam_lo",";Energy (MeV);Counts",nBins,0,endR); // h1 Id = 1
   analysisManager
-    ->CreateH1("Det0_lo",";Energy (MeV);Counts",nBins,0,endR); // h1 Id = 2
+    ->CreateH1("Det0_gam_smear",";Energy (MeV);Counts",nBins,0,endR); //h1 Id = 3
   analysisManager
-    ->CreateH1("Det0_Scat",";Energy (MeV);Counts",nBins,0,endR); // h1 Id = 3
-
+    ->CreateH1("Det0_gam_scat",";Energy (MeV);Counts",nBins,0,endR); // h1 Id = 4 
   analysisManager
-    ->CreateH1("Det0_lo_smear",";Energy (MeV);Counts",nBins,0,endR); // h1 Id = 2
+    ->CreateH1("Det0_neu_eDep",";Energy (MeV);Counts",nBins,0,endR);  //h1 Id = 5
+  analysisManager
+    ->CreateH1("Det0_neu_lo",";Energy (MeV);Counts",nBins,0,endR);  //h1 Id = 6
+  analysisManager
+    ->CreateH1("Det0_neu_smear",";Energy (MeV);Counts",nBins,0,endR);  //h1 Id = 7
+                                                                    
   /*analysisManager
     ->CreateH1("Det0_eDep_neu",";Energy (MeV);Counts",nBins,0,endR); // h1 Id = 3
   analysisManager
